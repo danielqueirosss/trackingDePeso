@@ -1,0 +1,474 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.app { max-width: 680px; padding: 1.5rem 0; }
+.tabs { display: flex; gap: 4px; background: var(--color-background-secondary); padding: 4px; border-radius: var(--border-radius-lg); margin-bottom: 1.5rem; }
+.tab { flex: 1; padding: 8px 12px; border: none; background: transparent; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 500; cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; }
+.tab.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+.tab:hover:not(.active) { color: var(--color-text-primary); }
+.panel { display: none; }
+.panel.active { display: block; }
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+.metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+.metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; }
+.metric-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.metric-unit { font-size: 13px; color: var(--color-text-secondary); font-weight: 400; }
+.progress-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; }
+.progress-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
+.progress-label { font-size: 14px; color: var(--color-text-secondary); }
+.progress-pct { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.progress-bar-bg { height: 10px; background: var(--color-background-secondary); border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+.progress-bar-fill { height: 100%; border-radius: 99px; background: #1D9E75; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.progress-ticks { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-secondary); }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 13px; color: var(--color-text-secondary); }
+.form-group input { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 9px 12px; font-size: 14px; color: var(--color-text-primary); font-family: var(--font-sans); outline: none; }
+.form-group input:focus { border-color: #1D9E75; box-shadow: 0 0 0 2px rgba(29,158,117,0.15); }
+.btn-primary { background: #1D9E75; color: white; border: none; border-radius: var(--border-radius-md); padding: 10px 20px; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; font-family: var(--font-sans); }
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:active { opacity: 0.78; transform: scale(0.98); }
+.btn-block { width: 100%; }
+.log-list { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
+.log-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); }
+.log-date { font-size: 13px; color: var(--color-text-secondary); }
+.log-weight { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.log-diff { font-size: 12px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+.diff-up { background: #FCEBEB; color: #A32D2D; }
+.diff-down { background: #E1F5EE; color: #0F6E56; }
+.diff-same { background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); }
+.empty-state { text-align: center; padding: 2rem; color: var(--color-text-secondary); font-size: 14px; }
+.status-msg { font-size: 13px; padding: 8px 12px; border-radius: var(--border-radius-md); margin-top: 8px; display: none; }
+.status-success { background: #E1F5EE; color: #0F6E56; }
+.status-error { background: #FCEBEB; color: #A32D2D; }
+.bmi-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 500; }
+.chart-wrapper { position: relative; width: 100%; height: 240px; }
+.delete-btn { background: none; border: none; cursor: pointer; color: var(--color-text-secondary); padding: 4px; border-radius: 4px; font-size: 16px; opacity: 0.5; transition: opacity 0.15s; }
+.delete-btn:hover { opacity: 1; }
+</style>
+
+<h2 class="sr-only">Aplicação de rastreamento de peso e metas</h2>
+
+<div class="app">
+  <div class="tabs" role="tablist">
+    <button class="tab active" role="tab" onclick="switchTab('progresso')"><i class="ti ti-chart-line" aria-hidden="true"></i> Progresso</button>
+    <button class="tab" role="tab" onclick="switchTab('registar')"><i class="ti ti-plus" aria-hidden="true"></i> Registar</button>
+    <button class="tab" role="tab" onclick="switchTab('historico')"><i class="ti ti-list" aria-hidden="true"></i> Histórico</button>
+    <button class="tab" role="tab" onclick="switchTab('perfil')"><i class="ti ti-user" aria-hidden="true"></i> Perfil</button>
+  </div>
+
+  <div id="panel-progresso" class="panel active">
+    <div id="no-profile-msg" class="empty-state" style="display:none;">
+      <i class="ti ti-user" aria-hidden="true" style="font-size:32px; display:block; margin-bottom:8px;"></i>
+      Configura o teu perfil primeiro para veres o teu progresso.
+    </div>
+    <div id="progress-content">
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Peso Inicial</div>
+          <div class="metric-value" id="m-inicial">—<span class="metric-unit"></span></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Peso Atual</div>
+          <div class="metric-value" id="m-atual">—<span class="metric-unit"> kg</span></div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Objetivo</div>
+          <div class="metric-value" id="m-objetivo">—<span class="metric-unit"> kg</span></div>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-header">
+          <div>
+            <div class="section-title">Progresso para o objetivo</div>
+            <div id="progress-desc" style="font-size:13px; color: var(--color-text-secondary);">–</div>
+          </div>
+          <div class="progress-pct" id="progress-pct">0%</div>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+        <div class="progress-ticks">
+          <span id="tick-start">—</span>
+          <span id="tick-remaining">—</span>
+          <span id="tick-goal">—</span>
+        </div>
+      </div>
+
+      <div class="card" id="bmi-card">
+        <div class="section-title">IMC Atual</div>
+        <div style="display:flex; align-items:center; gap:12px; margin-top:4px;">
+          <span style="font-size:28px; font-weight:500;" id="bmi-value">—</span>
+          <span class="bmi-pill" id="bmi-label" style="background: var(--color-background-secondary); color: var(--color-text-secondary);">—</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Últimos 30 dias</div>
+        <div class="chart-wrapper">
+          <canvas id="chartProgresso" role="img" aria-label="Gráfico de peso dos últimos 30 dias"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-registar" class="panel">
+    <div class="card">
+      <div class="section-title">Novo registo de peso</div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label for="reg-data">Data</label>
+          <input type="date" id="reg-data">
+        </div>
+        <div class="form-group">
+          <label for="reg-peso">Peso (kg)</label>
+          <input type="number" id="reg-peso" placeholder="ex: 75.5" step="0.1" min="20" max="300">
+        </div>
+      </div>
+      <button class="btn-primary btn-block" onclick="registarPeso()"><i class="ti ti-check" aria-hidden="true"></i> Guardar registo</button>
+      <div class="status-msg" id="reg-status"></div>
+    </div>
+
+    <div class="card" id="ultimo-registo-card" style="display:none;">
+      <div class="section-title">Último registo</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+        <div>
+          <div style="font-size:13px; color:var(--color-text-secondary);" id="ult-data">—</div>
+          <div style="font-size:24px; font-weight:500; margin-top:4px;" id="ult-peso">— kg</div>
+        </div>
+        <div id="ult-diff"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-historico" class="panel">
+    <div class="card">
+      <div class="section-title">Todas as pesagens</div>
+      <div class="log-list" id="log-list" style="margin-top:12px;">
+        <div class="empty-state">Ainda não há registos.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-perfil" class="panel">
+    <div class="card">
+      <div class="section-title">Os meus dados</div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label for="p-altura">Altura (cm)</label>
+          <input type="number" id="p-altura" placeholder="ex: 175" min="100" max="250">
+        </div>
+        <div class="form-group">
+          <label for="p-peso-inicial">Peso Inicial (kg)</label>
+          <input type="number" id="p-peso-inicial" placeholder="ex: 85.0" step="0.1" min="20" max="300">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="p-objetivo">Peso Objetivo (kg)</label>
+          <input type="number" id="p-objetivo" placeholder="ex: 70.0" step="0.1" min="20" max="300">
+        </div>
+        <div class="form-group">
+          <label for="p-nome">Nome (opcional)</label>
+          <input type="text" id="p-nome" placeholder="ex: João">
+        </div>
+      </div>
+      <button class="btn-primary btn-block" onclick="guardarPerfil()"><i class="ti ti-device-floppy" aria-hidden="true"></i> Guardar perfil</button>
+      <div class="status-msg" id="perfil-status"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let state = {
+  perfil: null,
+  registos: []
+};
+
+function loadState() {
+  try {
+    const p = localStorage.getItem('wt_perfil');
+    const r = localStorage.getItem('wt_registos');
+    if (p) state.perfil = JSON.parse(p);
+    if (r) state.registos = JSON.parse(r);
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('wt_perfil', JSON.stringify(state.perfil));
+    localStorage.setItem('wt_registos', JSON.stringify(state.registos));
+  } catch(e) {}
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['progresso','registar','historico','perfil'][i] === id));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (id === 'progresso') renderProgresso();
+  if (id === 'historico') renderHistorico();
+  if (id === 'perfil') preencherPerfil();
+}
+
+function guardarPerfil() {
+  const altura = parseFloat(document.getElementById('p-altura').value);
+  const pesoinicial = parseFloat(document.getElementById('p-peso-inicial').value);
+  const objetivo = parseFloat(document.getElementById('p-objetivo').value);
+  const nome = document.getElementById('p-nome').value.trim();
+  if (!altura || !pesoinicial || !objetivo) {
+    showStatus('perfil-status', 'Preenche todos os campos obrigatórios.', false);
+    return;
+  }
+  state.perfil = { altura, pesoinicial, objetivo, nome };
+  saveState();
+  showStatus('perfil-status', 'Perfil guardado com sucesso!', true);
+}
+
+function registarPeso() {
+  const data = document.getElementById('reg-data').value;
+  const peso = parseFloat(document.getElementById('reg-peso').value);
+  if (!data || !peso) {
+    showStatus('reg-status', 'Preenche a data e o peso.', false);
+    return;
+  }
+  const existe = state.registos.findIndex(r => r.data === data);
+  if (existe >= 0) {
+    state.registos[existe].peso = peso;
+  } else {
+    state.registos.push({ data, peso });
+  }
+  state.registos.sort((a,b) => a.data.localeCompare(b.data));
+  saveState();
+  showStatus('reg-status', 'Registo guardado!', true);
+  renderUltimoRegisto();
+}
+
+function showStatus(id, msg, ok) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'status-msg ' + (ok ? 'status-success' : 'status-error');
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+function getPesoAtual() {
+  if (!state.registos.length) return null;
+  return state.registos[state.registos.length - 1].peso;
+}
+
+function calcBMI(peso, altcm) {
+  const altm = altcm / 100;
+  return peso / (altm * altm);
+}
+
+function bmiLabel(bmi) {
+  if (bmi < 18.5) return ['Abaixo do peso', '#185FA5', '#E6F1FB'];
+  if (bmi < 25) return ['Peso normal', '#0F6E56', '#E1F5EE'];
+  if (bmi < 30) return ['Pré-obesidade', '#854F0B', '#FAEEDA'];
+  return ['Obesidade', '#A32D2D', '#FCEBEB'];
+}
+
+let chartInstance = null;
+
+function renderProgresso() {
+  if (!state.perfil) {
+    document.getElementById('no-profile-msg').style.display = 'block';
+    document.getElementById('progress-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('no-profile-msg').style.display = 'none';
+  document.getElementById('progress-content').style.display = 'block';
+
+  const { pesoinicial, objetivo, altura } = state.perfil;
+  const atual = getPesoAtual() ?? pesoinicial;
+
+  document.getElementById('m-inicial').innerHTML = pesoinicial.toFixed(1) + '<span class="metric-unit"> kg</span>';
+  document.getElementById('m-atual').innerHTML = atual.toFixed(1) + '<span class="metric-unit"> kg</span>';
+  document.getElementById('m-objetivo').innerHTML = objetivo.toFixed(1) + '<span class="metric-unit"> kg</span>';
+
+  const totalDiff = pesoinicial - objetivo;
+  const currentDiff = pesoinicial - atual;
+  let pct = 0;
+  if (Math.abs(totalDiff) > 0.01) {
+    pct = Math.max(0, Math.min(100, (currentDiff / totalDiff) * 100));
+  }
+  const pctR = Math.round(pct);
+  document.getElementById('progress-pct').textContent = pctR + '%';
+  document.getElementById('progress-bar').style.width = pctR + '%';
+  const falta = Math.abs(atual - objetivo).toFixed(1);
+  const direcao = objetivo < pesoinicial ? 'perder' : 'ganhar';
+  document.getElementById('progress-desc').textContent = `Faltam ${falta} kg para ${direcao}`;
+  document.getElementById('tick-start').textContent = pesoinicial.toFixed(1) + ' kg';
+  document.getElementById('tick-remaining').textContent = falta + ' kg restantes';
+  document.getElementById('tick-goal').textContent = objetivo.toFixed(1) + ' kg';
+
+  const bmi = calcBMI(atual, altura);
+  document.getElementById('bmi-value').textContent = bmi.toFixed(1);
+  const [lbl, txtc, bgc] = bmiLabel(bmi);
+  const pill = document.getElementById('bmi-label');
+  pill.textContent = lbl;
+  pill.style.background = bgc;
+  pill.style.color = txtc;
+
+  renderChart();
+}
+
+function renderChart() {
+  const hoje = new Date();
+  const inicio30 = new Date(hoje);
+  inicio30.setDate(hoje.getDate() - 29);
+
+  const recent = state.registos.filter(r => new Date(r.data) >= inicio30);
+
+  const labels = [];
+  const dados = [];
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(inicio30);
+    d.setDate(inicio30.getDate() + i);
+    const ds = d.toISOString().split('T')[0];
+    const r = recent.find(x => x.data === ds);
+    labels.push(d.toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' }));
+    dados.push(r ? r.peso : null);
+  }
+
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+  const labelColor = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.4)';
+  const lineColor = '#1D9E75';
+  const objetivo = state.perfil ? state.perfil.objetivo : null;
+
+  const datasets = [{
+    label: 'Peso',
+    data: dados,
+    borderColor: lineColor,
+    backgroundColor: 'rgba(29,158,117,0.08)',
+    borderWidth: 2,
+    pointRadius: dados.map(d => d !== null ? 4 : 0),
+    pointBackgroundColor: lineColor,
+    spanGaps: true,
+    fill: true,
+    tension: 0.35
+  }];
+
+  if (objetivo) {
+    datasets.push({
+      label: 'Objetivo',
+      data: Array(30).fill(objetivo),
+      borderColor: 'rgba(29,158,117,0.35)',
+      borderDash: [5,4],
+      borderWidth: 1.5,
+      pointRadius: 0,
+      fill: false
+    });
+  }
+
+  chartInstance = new Chart(document.getElementById('chartProgresso'), {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.parsed.y !== null ? ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + ' kg' : null
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: gridColor },
+          ticks: { color: labelColor, font: { size: 11 }, maxTicksLimit: 6 }
+        },
+        y: {
+          grid: { color: gridColor },
+          ticks: { color: labelColor, font: { size: 11 }, callback: v => v.toFixed(1) + ' kg' }
+        }
+      }
+    }
+  });
+}
+
+function renderHistorico() {
+  const list = document.getElementById('log-list');
+  if (!state.registos.length) {
+    list.innerHTML = '<div class="empty-state"><i class="ti ti-clipboard-list" aria-hidden="true" style="font-size:28px; display:block; margin-bottom:8px;"></i>Ainda não há registos.</div>';
+    return;
+  }
+  const sorted = [...state.registos].reverse();
+  list.innerHTML = sorted.map((r, i) => {
+    const prev = sorted[i + 1];
+    let diffHtml = '';
+    if (prev) {
+      const d = r.peso - prev.peso;
+      if (Math.abs(d) < 0.05) diffHtml = `<span class="log-diff diff-same">= sem alt.</span>`;
+      else if (d > 0) diffHtml = `<span class="log-diff diff-up">▲ +${d.toFixed(1)} kg</span>`;
+      else diffHtml = `<span class="log-diff diff-down">▼ ${d.toFixed(1)} kg</span>`;
+    }
+    const dStr = new Date(r.data + 'T00:00:00').toLocaleDateString('pt-PT', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+    return `<div class="log-item">
+      <div>
+        <div class="log-date">${dStr}</div>
+        <div class="log-weight">${r.peso.toFixed(1)} kg</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        ${diffHtml}
+        <button class="delete-btn" onclick="apagarRegisto('${r.data}')" aria-label="Apagar registo"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function apagarRegisto(data) {
+  state.registos = state.registos.filter(r => r.data !== data);
+  saveState();
+  renderHistorico();
+}
+
+function renderUltimoRegisto() {
+  const card = document.getElementById('ultimo-registo-card');
+  if (!state.registos.length) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+  const last = state.registos[state.registos.length - 1];
+  const prev = state.registos.length > 1 ? state.registos[state.registos.length - 2] : null;
+  document.getElementById('ult-data').textContent = new Date(last.data + 'T00:00:00').toLocaleDateString('pt-PT', { weekday: 'long', day: '2-digit', month: 'long' });
+  document.getElementById('ult-peso').textContent = last.peso.toFixed(1) + ' kg';
+  if (prev) {
+    const d = last.peso - prev.peso;
+    const el = document.getElementById('ult-diff');
+    if (Math.abs(d) < 0.05) el.innerHTML = `<span class="log-diff diff-same">= sem alteração</span>`;
+    else if (d > 0) el.innerHTML = `<span class="log-diff diff-up">▲ +${d.toFixed(1)} kg</span>`;
+    else el.innerHTML = `<span class="log-diff diff-down">▼ ${d.toFixed(1)} kg</span>`;
+  }
+}
+
+function preencherPerfil() {
+  if (!state.perfil) return;
+  document.getElementById('p-altura').value = state.perfil.altura || '';
+  document.getElementById('p-peso-inicial').value = state.perfil.pesoinicial || '';
+  document.getElementById('p-objetivo').value = state.perfil.objetivo || '';
+  document.getElementById('p-nome').value = state.perfil.nome || '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  const hoje = new Date().toISOString().split('T')[0];
+  document.getElementById('reg-data').value = hoje;
+  renderProgresso();
+  renderUltimoRegisto();
+});
+loadState();
+const hoje = new Date().toISOString().split('T')[0];
+document.getElementById('reg-data').value = hoje;
+renderProgresso();
+renderUltimoRegisto();
+</script>

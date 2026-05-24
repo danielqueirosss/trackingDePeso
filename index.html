@@ -3,507 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tracking de Peso</title>
+<title>TrackingDePeso</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #0f1117;
-    --bg2: #171923;
-    --bg3: #1e2130;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.12);
-    --text: #eef0f6;
-    --text2: #8b90a7;
-    --text3: #5a5f78;
-    --green: #1D9E75;
-    --green2: #0f6e56;
-    --green-bg: rgba(29,158,117,0.12);
-    --green-glow: rgba(29,158,117,0.2);
-    --red: #e24b4a;
-    --red-bg: rgba(226,75,74,0.1);
-    --amber: #ef9f27;
-    --amber-bg: rgba(239,159,39,0.1);
-    --blue: #378add;
-    --blue-bg: rgba(55,138,221,0.1);
-    --radius: 12px;
-    --radius-sm: 8px;
-    --sidebar: 220px;
-  }
-
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  .layout {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  /* SIDEBAR */
-  .sidebar {
-    width: var(--sidebar);
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    flex-shrink: 0;
-  }
-
-  .sidebar-brand {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .brand-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--green-bg);
-    border: 1px solid rgba(29,158,117,0.3);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 12px;
-    color: var(--green);
-    font-size: 18px;
-  }
-
-  .brand-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: -0.01em;
-  }
-
-  .brand-sub {
-    font-size: 11px;
-    color: var(--text3);
-    margin-top: 2px;
-  }
-
-  .sidebar-nav {
-    padding: 16px 12px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 10px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    color: var(--text2);
-    font-size: 13px;
-    font-weight: 400;
-    transition: all 0.15s;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-  }
-
-  .nav-item i { font-size: 17px; }
-
-  .nav-item:hover {
-    background: var(--bg3);
-    color: var(--text);
-  }
-
-  .nav-item.active {
-    background: var(--green-bg);
-    color: var(--green);
-    font-weight: 500;
-  }
-
-  .nav-item.active i { color: var(--green); }
-
-  .sidebar-footer {
-    padding: 16px 12px;
-    border-top: 1px solid var(--border);
-  }
-
-  .profile-chip {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: var(--radius-sm);
-    background: var(--bg3);
-  }
-
-  .avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--green-bg);
-    border: 1px solid rgba(29,158,117,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--green);
-    font-size: 12px;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-
-  .profile-name { font-size: 12px; font-weight: 500; color: var(--text); }
-  .profile-meta { font-size: 11px; color: var(--text3); }
-
-  /* MAIN */
-  .main {
-    flex: 1;
-    overflow-y: auto;
-    background: var(--bg);
-  }
-
-  .page-header {
-    padding: 28px 32px 0;
-    margin-bottom: 24px;
-  }
-
-  .page-title {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: -0.02em;
-  }
-
-  .page-sub {
-    font-size: 13px;
-    color: var(--text2);
-    margin-top: 4px;
-  }
-
-  .content { padding: 0 32px 32px; }
-
-  .panel { display: none; }
-  .panel.active { display: block; }
-
-  /* CARDS */
-  .card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-  }
-
-  .card-title {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 16px;
-  }
-
-  /* METRIC GRID */
-  .metric-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .metric {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 20px;
-  }
-
-  .metric-label {
-    font-size: 11px;
-    color: var(--text3);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 8px;
-  }
-
-  .metric-value {
-    font-size: 26px;
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: -0.03em;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .metric-unit { font-size: 13px; font-weight: 400; color: var(--text2); margin-left: 2px; }
-
-  .metric-change {
-    font-size: 11px;
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  /* PROGRESS */
-  .progress-section {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    margin-bottom: 16px;
-  }
-
-  .progress-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 14px;
-  }
-
-  .progress-pct {
-    font-size: 32px;
-    font-weight: 600;
-    color: var(--green);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: -0.03em;
-  }
-
-  .progress-bar-bg {
-    height: 8px;
-    background: var(--bg3);
-    border-radius: 99px;
-    overflow: hidden;
-    margin-bottom: 10px;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--green2), var(--green));
-    border-radius: 99px;
-    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .progress-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* GRID 2 COL */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-
-  /* CHART */
-  .chart-wrap { position: relative; width: 100%; height: 260px; }
-
-  /* FORM */
-  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-  .form-group label { font-size: 12px; color: var(--text2); font-weight: 500; }
-
-  .form-group input {
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    font-size: 14px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-
-  .form-group input:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px var(--green-glow);
-  }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .btn {
-    padding: 10px 20px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.15s;
-    border: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .btn-primary {
-    background: var(--green);
-    color: white;
-  }
-
-  .btn-primary:hover { background: #18b882; }
-  .btn-primary:active { transform: scale(0.98); }
-  .btn-block { width: 100%; justify-content: center; }
-
-  /* LOG */
-  .log-list { display: flex; flex-direction: column; gap: 6px; max-height: 400px; overflow-y: auto; }
-
-  .log-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    background: var(--bg3);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    transition: border-color 0.15s;
-  }
-
-  .log-item:hover { border-color: var(--border2); }
-  .log-date { font-size: 12px; color: var(--text2); margin-bottom: 2px; }
-  .log-weight { font-size: 16px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--text); }
-
-  .badge {
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 99px;
-    font-weight: 500;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .badge-up { background: var(--red-bg); color: var(--red); }
-  .badge-down { background: var(--green-bg); color: var(--green); }
-  .badge-same { background: var(--bg3); color: var(--text3); border: 1px solid var(--border); }
-
-  .delete-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--text3);
-    padding: 4px 6px;
-    border-radius: 6px;
-    font-size: 15px;
-    transition: all 0.15s;
-    line-height: 1;
-  }
-
-  .delete-btn:hover { color: var(--red); background: var(--red-bg); }
-
-  /* BMI */
-  .bmi-bar {
-    height: 6px;
-    border-radius: 99px;
-    background: linear-gradient(90deg, #378add 0%, #1D9E75 30%, #ef9f27 60%, #e24b4a 100%);
-    margin: 10px 0 6px;
-    position: relative;
-  }
-
-  .bmi-marker {
-    position: absolute;
-    top: -4px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: white;
-    border: 2px solid var(--bg);
-    box-shadow: 0 0 0 2px var(--green);
-    transform: translateX(-50%);
-    transition: left 0.6s cubic-bezier(0.16,1,0.3,1);
-  }
-
-  .bmi-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); }
-
-  /* STATUS */
-  .status {
-    font-size: 12px;
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    margin-top: 10px;
-    display: none;
-  }
-
-  .status-ok { background: var(--green-bg); color: var(--green); border: 1px solid rgba(29,158,117,0.2); }
-  .status-err { background: var(--red-bg); color: var(--red); border: 1px solid rgba(226,75,74,0.2); }
-
-  /* EMPTY */
-  .empty { text-align: center; padding: 32px; color: var(--text3); font-size: 13px; }
-  .empty i { font-size: 28px; display: block; margin-bottom: 8px; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
-
-  /* MOBILE */
-  @media (max-width: 768px) {
-    .sidebar { display: none; }
-    .mobile-nav {
-      display: flex;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-      z-index: 100;
-      padding: 8px 0 12px;
-    }
-    .mobile-nav button {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      background: none;
-      border: none;
-      color: var(--text3);
-      font-size: 10px;
-      cursor: pointer;
-      padding: 4px 0;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .mobile-nav button i { font-size: 20px; }
-    .mobile-nav button.active { color: var(--green); }
-    .content { padding: 0 16px 80px; }
-    .page-header { padding: 20px 16px 0; }
-    .metric-grid { grid-template-columns: 1fr 1fr; }
-    .grid-2, .grid-3 { grid-template-columns: 1fr; }
-    .form-row { grid-template-columns: 1fr; }
-  }
-
-  @media (min-width: 769px) {
-    .mobile-nav { display: none; }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#171923;--bg3:#1e2130;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#eef0f6;--text2:#8b90a7;--text3:#5a5f78;
+  --green:#1D9E75;--green2:#0f6e56;--green-bg:rgba(29,158,117,0.12);--green-glow:rgba(29,158,117,0.2);
+  --red:#e24b4a;--red-bg:rgba(226,75,74,0.1);
+  --amber:#ef9f27;--amber-bg:rgba(239,159,39,0.12);
+  --blue:#378add;--blue-bg:rgba(55,138,221,0.12);
+  --purple:#8b5cf6;--purple-bg:rgba(139,92,246,0.12);
+  --radius:12px;--radius-sm:8px;--sidebar:220px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+.layout{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-brand{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.brand-icon{width:36px;height:36px;background:var(--green-bg);border:1px solid rgba(29,158,117,0.3);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;color:var(--green);font-size:18px}
+.brand-name{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-0.01em}
+.brand-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.sidebar-nav{padding:16px 12px;flex:1;display:flex;flex-direction:column;gap:2px}
+.nav-section{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;padding:8px 10px 4px;margin-top:4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);font-size:13px;font-weight:400;transition:all 0.15s;border:none;background:none;width:100%;text-align:left}
+.nav-item i{font-size:17px}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--green-bg);color:var(--green);font-weight:500}
+.nav-item.active i{color:var(--green)}
+.sidebar-footer{padding:16px 12px;border-top:1px solid var(--border)}
+.profile-chip{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);background:var(--bg3)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--green-bg);border:1px solid rgba(29,158,117,0.3);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:12px;font-weight:600;flex-shrink:0}
+.profile-name{font-size:12px;font-weight:500;color:var(--text)}
+.profile-meta{font-size:11px;color:var(--text3)}
+.main{flex:1;overflow-y:auto;background:var(--bg)}
+.page-header{padding:28px 32px 0;margin-bottom:24px}
+.page-title{font-size:22px;font-weight:600;color:var(--text);letter-spacing:-0.02em}
+.page-sub{font-size:13px;color:var(--text2);margin-top:4px}
+.content{padding:0 32px 32px}
+.panel{display:none}
+.panel.active{display:block}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px}
+.card-title{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.metric-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.metric.accent-amber{border-color:rgba(239,159,39,0.2)}
+.metric.accent-blue{border-color:rgba(55,138,221,0.2)}
+.metric.accent-purple{border-color:rgba(139,92,246,0.2)}
+.metric-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px}
+.metric-value{font-size:26px;font-weight:600;color:var(--text);letter-spacing:-0.03em;font-family:'DM Mono',monospace}
+.metric-unit{font-size:13px;font-weight:400;color:var(--text2);margin-left:2px}
+.metric-change{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:4px}
+.progress-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:16px}
+.progress-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.progress-pct{font-size:32px;font-weight:600;color:var(--green);font-family:'DM Mono',monospace;letter-spacing:-0.03em}
+.progress-pct.amber{color:var(--amber)}
+.progress-pct.blue{color:var(--blue)}
+.progress-bar-bg{height:8px;background:var(--bg3);border-radius:99px;overflow:hidden;margin-bottom:10px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--green2),var(--green));border-radius:99px;transition:width 0.8s cubic-bezier(0.16,1,0.3,1)}
+.progress-bar-fill.amber{background:linear-gradient(90deg,#a06b10,var(--amber))}
+.progress-bar-fill.blue{background:linear-gradient(90deg,#1256a0,var(--blue))}
+.progress-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.chart-wrap{position:relative;width:100%;height:240px}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.form-group label{font-size:12px;color:var(--text2);font-weight:500}
+.form-group input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 14px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s,box-shadow 0.15s}
+.form-group input:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--green-glow)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.btn{padding:10px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;border:none;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--green);color:white}
+.btn-primary:hover{background:#18b882}
+.btn-primary:active{transform:scale(0.98)}
+.btn-amber{background:var(--amber);color:#0f1117}
+.btn-amber:hover{background:#f5ae3a}
+.btn-block{width:100%;justify-content:center}
+.log-list{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow-y:auto}
+.log-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border);transition:border-color 0.15s}
+.log-item:hover{border-color:var(--border2)}
+.log-date{font-size:12px;color:var(--text2);margin-bottom:2px}
+.log-weight{font-size:15px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)}
+.badge{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;font-family:'DM Mono',monospace}
+.badge-up{background:var(--red-bg);color:var(--red)}
+.badge-down{background:var(--green-bg);color:var(--green)}
+.badge-same{background:var(--bg3);color:var(--text3);border:1px solid var(--border)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.delete-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 6px;border-radius:6px;font-size:15px;transition:all 0.15s;line-height:1}
+.delete-btn:hover{color:var(--red);background:var(--red-bg)}
+.bmi-bar{height:6px;border-radius:99px;background:linear-gradient(90deg,#378add 0%,#1D9E75 30%,#ef9f27 60%,#e24b4a 100%);margin:10px 0 6px;position:relative}
+.bmi-marker{position:absolute;top:-4px;width:14px;height:14px;border-radius:50%;background:white;border:2px solid var(--bg);box-shadow:0 0 0 2px var(--green);transform:translateX(-50%);transition:left 0.6s cubic-bezier(0.16,1,0.3,1)}
+.bmi-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
+.status{font-size:12px;padding:8px 12px;border-radius:var(--radius-sm);margin-top:10px;display:none}
+.status-ok{background:var(--green-bg);color:var(--green);border:1px solid rgba(29,158,117,0.2)}
+.status-err{background:var(--red-bg);color:var(--red);border:1px solid rgba(226,75,74,0.2)}
+.empty{text-align:center;padding:32px;color:var(--text3);font-size:13px}
+.empty i{font-size:28px;display:block;margin-bottom:8px}
+.ring-container{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+.ring-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
+.ring-val{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text);text-align:center}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+@media(max-width:768px){
+  .sidebar{display:none}
+  .mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:100;padding:8px 0 12px}
+  .mobile-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer;padding:4px 0;font-family:'DM Sans',sans-serif}
+  .mobile-nav button i{font-size:20px}
+  .mobile-nav button.active{color:var(--green)}
+  .content{padding:0 16px 80px}
+  .page-header{padding:20px 16px 0}
+  .metric-grid,.metric-grid-3{grid-template-columns:1fr 1fr}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .form-row,.form-row-3{grid-template-columns:1fr}
+}
+@media(min-width:769px){.mobile-nav{display:none}}
 </style>
 </head>
 <body>
-
 <div class="layout">
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <div class="brand-icon"><i class="ti ti-scale"></i></div>
+      <div class="brand-icon"><i class="ti ti-heartbeat"></i></div>
       <div class="brand-name">TrackingDePeso</div>
       <div class="brand-sub">O teu progresso pessoal</div>
     </div>
     <nav class="sidebar-nav">
-      <button class="nav-item active" onclick="switchTab('progresso')">
-        <i class="ti ti-chart-line"></i> Progresso
-      </button>
-      <button class="nav-item" onclick="switchTab('registar')">
-        <i class="ti ti-circle-plus"></i> Registar
-      </button>
-      <button class="nav-item" onclick="switchTab('historico')">
-        <i class="ti ti-list-details"></i> Histórico
-      </button>
-      <button class="nav-item" onclick="switchTab('perfil')">
-        <i class="ti ti-settings"></i> Perfil
-      </button>
+      <div class="nav-section">Peso</div>
+      <button class="nav-item active" onclick="switchTab('progresso')"><i class="ti ti-chart-line"></i> Progresso</button>
+      <button class="nav-item" onclick="switchTab('registar')"><i class="ti ti-circle-plus"></i> Registar Peso</button>
+      <button class="nav-item" onclick="switchTab('historico')"><i class="ti ti-list-details"></i> Histórico Peso</button>
+      <div class="nav-section">Atividade</div>
+      <button class="nav-item" onclick="switchTab('atividade')"><i class="ti ti-run"></i> Atividade Física</button>
+      <button class="nav-item" onclick="switchTab('hist-ativ')"><i class="ti ti-timeline"></i> Histórico Ativ.</button>
+      <div class="nav-section">Conta</div>
+      <button class="nav-item" onclick="switchTab('perfil')"><i class="ti ti-settings"></i> Perfil</button>
     </nav>
     <div class="sidebar-footer">
       <div class="profile-chip">
@@ -516,141 +156,79 @@
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
 
-    <!-- PROGRESSO -->
+    <!-- PROGRESSO PESO -->
     <div id="panel-progresso" class="panel active">
       <div class="page-header">
         <div class="page-title">Progresso</div>
         <div class="page-sub" id="prog-sub">Acompanha a tua evolução</div>
       </div>
       <div class="content">
-
-        <div id="no-profile" class="empty" style="display:none;">
-          <i class="ti ti-settings"></i>
-          Configura o teu perfil primeiro para veres o progresso.
-        </div>
-
+        <div id="no-profile" class="empty" style="display:none;"><i class="ti ti-settings"></i>Configura o teu perfil primeiro.</div>
         <div id="prog-content">
           <div class="metric-grid">
-            <div class="metric">
-              <div class="metric-label">Peso Inicial</div>
-              <div class="metric-value" id="m-inicial">—<span class="metric-unit"> kg</span></div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">Peso Atual</div>
-              <div class="metric-value" id="m-atual">—<span class="metric-unit"> kg</span></div>
-              <div class="metric-change" id="m-diff"></div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">Objetivo</div>
-              <div class="metric-value" id="m-objetivo">—<span class="metric-unit"> kg</span></div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">Registos</div>
-              <div class="metric-value" id="m-registos">0<span class="metric-unit"> dias</span></div>
-            </div>
+            <div class="metric"><div class="metric-label">Peso Inicial</div><div class="metric-value" id="m-inicial">—<span class="metric-unit"> kg</span></div></div>
+            <div class="metric"><div class="metric-label">Peso Atual</div><div class="metric-value" id="m-atual">—<span class="metric-unit"> kg</span></div><div class="metric-change" id="m-diff"></div></div>
+            <div class="metric"><div class="metric-label">Objetivo</div><div class="metric-value" id="m-objetivo">—<span class="metric-unit"> kg</span></div></div>
+            <div class="metric"><div class="metric-label">Registos</div><div class="metric-value" id="m-registos">0<span class="metric-unit"> dias</span></div></div>
           </div>
-
           <div class="progress-section">
             <div class="progress-top">
-              <div>
-                <div class="card-title">Progresso para o objetivo</div>
-                <div style="font-size:13px; color:var(--text2);" id="prog-desc">—</div>
-              </div>
+              <div><div class="card-title">Progresso para o objetivo</div><div style="font-size:13px;color:var(--text2);" id="prog-desc">—</div></div>
               <div class="progress-pct" id="prog-pct">0%</div>
             </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
-            </div>
-            <div class="progress-labels">
-              <span id="tick-start">—</span>
-              <span id="tick-mid">—</span>
-              <span id="tick-goal">—</span>
-            </div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
+            <div class="progress-labels"><span id="tick-start">—</span><span id="tick-mid">—</span><span id="tick-goal">—</span></div>
           </div>
-
           <div class="grid-2">
             <div class="card">
               <div class="card-title">IMC Atual</div>
-              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:10px;">
-                <span style="font-size:32px; font-weight:600; font-family:'DM Mono',monospace; letter-spacing:-0.03em;" id="bmi-val">—</span>
-                <span style="font-size:13px; padding:3px 10px; border-radius:99px; font-weight:500;" id="bmi-badge">—</span>
+              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;">
+                <span style="font-size:32px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:-0.03em;" id="bmi-val">—</span>
+                <span style="font-size:13px;padding:3px 10px;border-radius:99px;font-weight:500;" id="bmi-badge">—</span>
               </div>
-              <div class="bmi-bar">
-                <div class="bmi-marker" id="bmi-marker" style="left:0%"></div>
-              </div>
-              <div class="bmi-labels">
-                <span>Baixo</span><span>Normal</span><span>Excesso</span><span>Obesidade</span>
-              </div>
+              <div class="bmi-bar"><div class="bmi-marker" id="bmi-marker" style="left:0%"></div></div>
+              <div class="bmi-labels"><span>Baixo</span><span>Normal</span><span>Excesso</span><span>Obesidade</span></div>
             </div>
-
             <div class="card">
               <div class="card-title">Resumo</div>
-              <div style="display:flex; flex-direction:column; gap:10px; margin-top:4px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text2); font-size:13px;">Perdido/Ganho</span>
-                  <span style="font-family:'DM Mono',monospace; font-weight:600;" id="sum-change">—</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text2); font-size:13px;">Falta para objetivo</span>
-                  <span style="font-family:'DM Mono',monospace; font-weight:600;" id="sum-falta">—</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text2); font-size:13px;">Altura</span>
-                  <span style="font-family:'DM Mono',monospace; font-weight:600;" id="sum-altura">—</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <span style="color:var(--text2); font-size:13px;">Primeiro registo</span>
-                  <span style="font-family:'DM Mono',monospace; font-size:12px; font-weight:600;" id="sum-primeiro">—</span>
-                </div>
+              <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--text2);font-size:13px;">Perdido/Ganho</span><span style="font-family:'DM Mono',monospace;font-weight:600;" id="sum-change">—</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--text2);font-size:13px;">Falta para objetivo</span><span style="font-family:'DM Mono',monospace;font-weight:600;" id="sum-falta">—</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--text2);font-size:13px;">Altura</span><span style="font-family:'DM Mono',monospace;font-weight:600;" id="sum-altura">—</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--text2);font-size:13px;">Primeiro registo</span><span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;" id="sum-primeiro">—</span></div>
               </div>
             </div>
           </div>
-
           <div class="card">
-            <div class="card-title">Últimos 30 dias</div>
-            <div class="chart-wrap">
-              <canvas id="chart30" role="img" aria-label="Gráfico de peso dos últimos 30 dias"></canvas>
-            </div>
+            <div class="card-title">Últimos 30 dias — Peso</div>
+            <div class="chart-wrap"><canvas id="chart30" role="img" aria-label="Gráfico de peso dos últimos 30 dias"></canvas></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- REGISTAR -->
+    <!-- REGISTAR PESO -->
     <div id="panel-registar" class="panel">
-      <div class="page-header">
-        <div class="page-title">Registar Peso</div>
-        <div class="page-sub">Adiciona a pesagem de hoje</div>
-      </div>
+      <div class="page-header"><div class="page-title">Registar Peso</div><div class="page-sub">Adiciona a pesagem de hoje</div></div>
       <div class="content">
-        <div style="max-width: 480px;">
+        <div style="max-width:480px;">
           <div class="card" style="margin-bottom:16px;">
             <div class="card-title">Nova pesagem</div>
             <div class="form-row">
-              <div class="form-group">
-                <label for="r-data">Data</label>
-                <input type="date" id="r-data">
-              </div>
-              <div class="form-group">
-                <label for="r-peso">Peso (kg)</label>
-                <input type="number" id="r-peso" placeholder="ex: 75.5" step="0.1" min="20" max="300">
-              </div>
+              <div class="form-group"><label>Data</label><input type="date" id="r-data"></div>
+              <div class="form-group"><label>Peso (kg)</label><input type="number" id="r-peso" placeholder="ex: 75.5" step="0.1" min="20" max="300"></div>
             </div>
-            <button class="btn btn-primary btn-block" onclick="registar()">
-              <i class="ti ti-check"></i> Guardar registo
-            </button>
+            <button class="btn btn-primary btn-block" onclick="registarPeso()"><i class="ti ti-check"></i> Guardar registo</button>
             <div class="status" id="r-status"></div>
           </div>
-
           <div class="card" id="ult-card" style="display:none;">
             <div class="card-title">Último registo</div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
               <div>
-                <div style="font-size:12px; color:var(--text2); margin-bottom:4px;" id="ult-data">—</div>
-                <div style="font-size:28px; font-weight:600; font-family:'DM Mono',monospace;" id="ult-peso">—</div>
+                <div style="font-size:12px;color:var(--text2);margin-bottom:4px;" id="ult-data">—</div>
+                <div style="font-size:28px;font-weight:600;font-family:'DM Mono',monospace;" id="ult-peso">—</div>
               </div>
               <div id="ult-badge"></div>
             </div>
@@ -659,55 +237,133 @@
       </div>
     </div>
 
-    <!-- HISTORICO -->
+    <!-- HISTORICO PESO -->
     <div id="panel-historico" class="panel">
-      <div class="page-header">
-        <div class="page-title">Histórico</div>
-        <div class="page-sub" id="hist-sub">Todas as pesagens registadas</div>
-      </div>
+      <div class="page-header"><div class="page-title">Histórico de Peso</div><div class="page-sub" id="hist-sub">Todas as pesagens registadas</div></div>
       <div class="content">
         <div class="card">
-          <div class="log-list" id="log-list">
-            <div class="empty"><i class="ti ti-clipboard-list"></i>Ainda não há registos.</div>
+          <div class="log-list" id="log-list"><div class="empty"><i class="ti ti-clipboard-list"></i>Ainda não há registos.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATIVIDADE FÍSICA -->
+    <div id="panel-atividade" class="panel">
+      <div class="page-header"><div class="page-title">Atividade Física</div><div class="page-sub" id="ativ-sub">Passos, distância e calorias de hoje</div></div>
+      <div class="content">
+
+        <div id="no-ativ-profile" class="empty" style="display:none;"><i class="ti ti-settings"></i>Define os teus objetivos de atividade no Perfil primeiro.</div>
+        <div id="ativ-content">
+
+          <div class="metric-grid-3" style="margin-bottom:16px;">
+            <div class="metric accent-amber">
+              <div class="metric-label"><i class="ti ti-shoe" style="font-size:13px;"></i> Passos Hoje</div>
+              <div class="metric-value" id="a-passos-hoje">—</div>
+              <div class="metric-change" id="a-passos-pct-label"></div>
+            </div>
+            <div class="metric accent-blue">
+              <div class="metric-label"><i class="ti ti-map-pin" style="font-size:13px;"></i> Distância Hoje</div>
+              <div class="metric-value" id="a-dist-hoje">—<span class="metric-unit"> km</span></div>
+              <div class="metric-change" id="a-dist-pct-label"></div>
+            </div>
+            <div class="metric" style="border-color:rgba(139,92,246,0.2);">
+              <div class="metric-label"><i class="ti ti-flame" style="font-size:13px;"></i> Calorias Hoje</div>
+              <div class="metric-value" id="a-cal-hoje">—<span class="metric-unit"> kcal</span></div>
+              <div class="metric-change" id="a-cal-pct-label"></div>
+            </div>
           </div>
+
+          <div class="grid-3" style="margin-bottom:16px;">
+            <div class="progress-section" style="margin-bottom:0;">
+              <div class="progress-top">
+                <div><div class="card-title" style="color:var(--amber);">Objetivo Passos</div><div style="font-size:12px;color:var(--text2);" id="a-passos-desc">—</div></div>
+                <div class="progress-pct amber" id="a-passos-pct">0%</div>
+              </div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill amber" id="a-passos-bar" style="width:0%"></div></div>
+              <div class="progress-labels"><span>0</span><span id="a-passos-obj-label">—</span></div>
+            </div>
+            <div class="progress-section" style="margin-bottom:0;">
+              <div class="progress-top">
+                <div><div class="card-title" style="color:var(--blue);">Objetivo Distância</div><div style="font-size:12px;color:var(--text2);" id="a-dist-desc">—</div></div>
+                <div class="progress-pct blue" id="a-dist-pct">0%</div>
+              </div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill blue" id="a-dist-bar" style="width:0%"></div></div>
+              <div class="progress-labels"><span>0 km</span><span id="a-dist-obj-label">—</span></div>
+            </div>
+            <div class="progress-section" style="margin-bottom:0;">
+              <div class="progress-top">
+                <div><div class="card-title" style="color:var(--purple);">Objetivo Calorias</div><div style="font-size:12px;color:var(--text2);" id="a-cal-desc">—</div></div>
+                <div class="progress-pct" style="color:var(--purple);" id="a-cal-pct">0%</div>
+              </div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="background:linear-gradient(90deg,#6d28d9,var(--purple));" id="a-cal-bar" style="width:0%"></div></div>
+              <div class="progress-labels"><span>0 kcal</span><span id="a-cal-obj-label">—</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-title">Registar atividade de hoje</div>
+            <div class="form-row-3">
+              <div class="form-group"><label><i class="ti ti-calendar" style="font-size:13px;"></i> Data</label><input type="date" id="a-data"></div>
+              <div class="form-group"><label><i class="ti ti-shoe" style="font-size:13px;"></i> Passos</label><input type="number" id="a-passos" placeholder="ex: 8500" min="0"></div>
+              <div class="form-group"><label><i class="ti ti-map-pin" style="font-size:13px;"></i> Distância (km)</label><input type="number" id="a-dist" placeholder="ex: 6.2" step="0.01" min="0"></div>
+            </div>
+            <div class="form-row" style="max-width:340px;">
+              <div class="form-group"><label><i class="ti ti-flame" style="font-size:13px;"></i> Calorias (kcal)</label><input type="number" id="a-cal" placeholder="ex: 420" min="0"></div>
+            </div>
+            <button class="btn btn-amber btn-block" onclick="registarAtividade()"><i class="ti ti-check"></i> Guardar atividade</button>
+            <div class="status" id="a-status"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Últimos 30 dias</div>
+            <div style="display:flex;gap:12px;margin-bottom:12px;font-size:12px;">
+              <button onclick="setChartAtivType('passos')" id="btn-passos" style="padding:4px 12px;border-radius:99px;border:1px solid var(--amber);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;">Passos</button>
+              <button onclick="setChartAtivType('distancia')" id="btn-distancia" style="padding:4px 12px;border-radius:99px;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;">Distância</button>
+              <button onclick="setChartAtivType('calorias')" id="btn-calorias" style="padding:4px 12px;border-radius:99px;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;">Calorias</button>
+            </div>
+            <div class="chart-wrap"><canvas id="chartAtiv" role="img" aria-label="Gráfico de atividade física dos últimos 30 dias"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORICO ATIVIDADE -->
+    <div id="panel-hist-ativ" class="panel">
+      <div class="page-header"><div class="page-title">Histórico de Atividade</div><div class="page-sub" id="hist-ativ-sub">Todos os registos de atividade</div></div>
+      <div class="content">
+        <div class="card">
+          <div class="log-list" id="ativ-log-list"><div class="empty"><i class="ti ti-run"></i>Ainda não há registos de atividade.</div></div>
         </div>
       </div>
     </div>
 
     <!-- PERFIL -->
     <div id="panel-perfil" class="panel">
-      <div class="page-header">
-        <div class="page-title">Perfil</div>
-        <div class="page-sub">Os teus dados pessoais e objetivo</div>
-      </div>
+      <div class="page-header"><div class="page-title">Perfil</div><div class="page-sub">Dados pessoais e objetivos</div></div>
       <div class="content">
-        <div style="max-width: 480px;">
-          <div class="card">
-            <div class="card-title">Dados pessoais</div>
+        <div style="max-width:520px;">
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-title">Dados pessoais e objetivo de peso</div>
             <div class="form-row">
-              <div class="form-group">
-                <label>Altura (cm)</label>
-                <input type="number" id="p-altura" placeholder="ex: 175">
-              </div>
-              <div class="form-group">
-                <label>Nome (opcional)</label>
-                <input type="text" id="p-nome" placeholder="ex: Daniel">
-              </div>
+              <div class="form-group"><label>Altura (cm)</label><input type="number" id="p-altura" placeholder="ex: 175"></div>
+              <div class="form-group"><label>Nome (opcional)</label><input type="text" id="p-nome" placeholder="ex: Daniel"></div>
             </div>
             <div class="form-row">
-              <div class="form-group">
-                <label>Peso Inicial (kg)</label>
-                <input type="number" id="p-inicial" placeholder="ex: 85.0" step="0.1">
-              </div>
-              <div class="form-group">
-                <label>Peso Objetivo (kg)</label>
-                <input type="number" id="p-objetivo" placeholder="ex: 70.0" step="0.1">
-              </div>
+              <div class="form-group"><label>Peso Inicial (kg)</label><input type="number" id="p-inicial" placeholder="ex: 85.0" step="0.1"></div>
+              <div class="form-group"><label>Peso Objetivo (kg)</label><input type="number" id="p-objetivo" placeholder="ex: 70.0" step="0.1"></div>
             </div>
-            <button class="btn btn-primary btn-block" onclick="guardarPerfil()">
-              <i class="ti ti-device-floppy"></i> Guardar perfil
-            </button>
+            <button class="btn btn-primary btn-block" onclick="guardarPerfil()"><i class="ti ti-device-floppy"></i> Guardar perfil</button>
             <div class="status" id="p-status"></div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="color:var(--amber);">Objetivos de atividade física (diários)</div>
+            <div class="form-row-3">
+              <div class="form-group"><label><i class="ti ti-shoe" style="font-size:13px;"></i> Passos/dia</label><input type="number" id="p-passos-obj" placeholder="ex: 10000" min="0"></div>
+              <div class="form-group"><label><i class="ti ti-map-pin" style="font-size:13px;"></i> Distância/dia (km)</label><input type="number" id="p-dist-obj" placeholder="ex: 7.0" step="0.1" min="0"></div>
+              <div class="form-group"><label><i class="ti ti-flame" style="font-size:13px;"></i> Calorias/dia (kcal)</label><input type="number" id="p-cal-obj" placeholder="ex: 500" min="0"></div>
+            </div>
+            <button class="btn btn-amber btn-block" onclick="guardarObjetivosAtiv()"><i class="ti ti-device-floppy"></i> Guardar objetivos de atividade</button>
+            <div class="status" id="p-ativ-status"></div>
           </div>
         </div>
       </div>
@@ -716,24 +372,32 @@
   </main>
 </div>
 
-<!-- MOBILE NAV -->
 <nav class="mobile-nav">
-  <button class="active" onclick="switchTab('progresso')"><i class="ti ti-chart-line"></i>Progresso</button>
+  <button class="active" onclick="switchTab('progresso')"><i class="ti ti-chart-line"></i>Peso</button>
   <button onclick="switchTab('registar')"><i class="ti ti-circle-plus"></i>Registar</button>
-  <button onclick="switchTab('historico')"><i class="ti ti-list-details"></i>Histórico</button>
+  <button onclick="switchTab('atividade')"><i class="ti ti-run"></i>Atividade</button>
+  <button onclick="switchTab('hist-ativ')"><i class="ti ti-timeline"></i>Histórico</button>
   <button onclick="switchTab('perfil')"><i class="ti ti-settings"></i>Perfil</button>
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-let state = { perfil: null, registos: [] };
+let state = { perfil: null, registos: [], atividade: [] };
+let chartPeso = null, chartAtivInst = null, chartAtivType = 'passos';
+
+const TABS = ['progresso','registar','historico','atividade','hist-ativ','perfil'];
+const SIDEBAR_BTNS = () => document.querySelectorAll('.nav-item');
+const MOBILE_BTNS = () => document.querySelectorAll('.mobile-nav button');
+const MOBILE_TAB_MAP = ['progresso','registar','atividade','hist-ativ','perfil'];
 
 function load() {
   try {
     const p = localStorage.getItem('wt_perfil');
     const r = localStorage.getItem('wt_registos');
+    const a = localStorage.getItem('wt_atividade');
     if (p) state.perfil = JSON.parse(p);
     if (r) state.registos = JSON.parse(r);
+    if (a) state.atividade = JSON.parse(a);
   } catch(e) {}
 }
 
@@ -741,39 +405,24 @@ function save() {
   try {
     localStorage.setItem('wt_perfil', JSON.stringify(state.perfil));
     localStorage.setItem('wt_registos', JSON.stringify(state.registos));
+    localStorage.setItem('wt_atividade', JSON.stringify(state.atividade));
   } catch(e) {}
 }
 
 function switchTab(id) {
-  document.querySelectorAll('.nav-item').forEach((el, i) => {
-    el.classList.toggle('active', ['progresso','registar','historico','perfil'][i] === id);
+  SIDEBAR_BTNS().forEach((el, i) => {
+    const map = ['progresso','registar','historico','atividade','hist-ativ','perfil'];
+    el.classList.toggle('active', map[i] === id);
   });
-  document.querySelectorAll('.mobile-nav button').forEach((el, i) => {
-    el.classList.toggle('active', ['progresso','registar','historico','perfil'][i] === id);
-  });
+  MOBILE_BTNS().forEach((el, i) => el.classList.toggle('active', MOBILE_TAB_MAP[i] === id));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + id).classList.add('active');
   if (id === 'progresso') renderProgresso();
   if (id === 'historico') renderHistorico();
   if (id === 'perfil') preencherPerfil();
   if (id === 'registar') renderUltimo();
-}
-
-function getPesoAtual() {
-  if (!state.registos.length) return null;
-  return state.registos[state.registos.length - 1].peso;
-}
-
-function calcBMI(peso, altcm) {
-  const m = altcm / 100;
-  return peso / (m * m);
-}
-
-function bmiInfo(bmi) {
-  if (bmi < 18.5) return ['Abaixo do peso', '#378add', '#3c6ca0', 0];
-  if (bmi < 25)   return ['Peso normal',    '#1D9E75', '#0f6e56', 30];
-  if (bmi < 30)   return ['Pré-obesidade',  '#ef9f27', '#a06b10', 65];
-  return              ['Obesidade',          '#e24b4a', '#9e2d2c', 88];
+  if (id === 'atividade') renderAtividade();
+  if (id === 'hist-ativ') renderHistoricoAtiv();
 }
 
 function showStatus(id, msg, ok) {
@@ -784,7 +433,19 @@ function showStatus(id, msg, ok) {
   setTimeout(() => el.style.display = 'none', 3000);
 }
 
-let chartInst = null;
+function getPesoAtual() {
+  if (!state.registos.length) return null;
+  return state.registos[state.registos.length - 1].peso;
+}
+
+function calcBMI(peso, altcm) { const m = altcm/100; return peso/(m*m); }
+
+function bmiInfo(bmi) {
+  if (bmi < 18.5) return ['Abaixo do peso','#378add',0];
+  if (bmi < 25)   return ['Peso normal','#1D9E75',30];
+  if (bmi < 30)   return ['Pré-obesidade','#ef9f27',65];
+  return               ['Obesidade','#e24b4a',88];
+}
 
 function renderProgresso() {
   if (!state.perfil) {
@@ -804,17 +465,15 @@ function renderProgresso() {
   document.getElementById('m-registos').innerHTML = state.registos.length + '<span class="metric-unit"> dias</span>';
 
   const diff = atual - pesoinicial;
-  const diffEl = document.getElementById('m-diff');
-  if (state.registos.length > 0 && diff !== 0) {
+  if (state.registos.length > 0 && Math.abs(diff) > 0.01) {
     const c = diff > 0 ? '#e24b4a' : '#1D9E75';
-    const arrow = diff > 0 ? '▲' : '▼';
-    diffEl.innerHTML = `<span style="color:${c}">${arrow} ${Math.abs(diff).toFixed(1)} kg desde o início</span>`;
+    document.getElementById('m-diff').innerHTML = `<span style="color:${c}">${diff>0?'▲':'▼'} ${Math.abs(diff).toFixed(1)} kg desde o início</span>`;
   }
 
   const totalDiff = pesoinicial - objetivo;
   const currentDiff = pesoinicial - atual;
   let pct = 0;
-  if (Math.abs(totalDiff) > 0.01) pct = Math.max(0, Math.min(100, (currentDiff / totalDiff) * 100));
+  if (Math.abs(totalDiff) > 0.01) pct = Math.max(0, Math.min(100, (currentDiff/totalDiff)*100));
   const pctR = Math.round(pct);
   document.getElementById('prog-pct').textContent = pctR + '%';
   document.getElementById('prog-bar').style.width = pctR + '%';
@@ -823,25 +482,23 @@ function renderProgresso() {
   const dir = objetivo < pesoinicial ? 'perder' : 'ganhar';
   document.getElementById('prog-desc').textContent = `Faltam ${falta} kg para ${dir}`;
   document.getElementById('tick-start').textContent = pesoinicial.toFixed(1) + ' kg';
-  document.getElementById('tick-mid').textContent = ((pesoinicial + objetivo) / 2).toFixed(1) + ' kg';
+  document.getElementById('tick-mid').textContent = ((pesoinicial+objetivo)/2).toFixed(1) + ' kg';
   document.getElementById('tick-goal').textContent = objetivo.toFixed(1) + ' kg';
 
   const bmi = calcBMI(atual, altura);
-  const [lbl, col, colDark, markerPct] = bmiInfo(bmi);
+  const [lbl, col, mPct] = bmiInfo(bmi);
   document.getElementById('bmi-val').textContent = bmi.toFixed(1);
   const badge = document.getElementById('bmi-badge');
-  badge.textContent = lbl;
-  badge.style.background = col + '22';
-  badge.style.color = col;
-  document.getElementById('bmi-marker').style.left = markerPct + '%';
+  badge.textContent = lbl; badge.style.background = col+'22'; badge.style.color = col;
+  document.getElementById('bmi-marker').style.left = mPct + '%';
   document.getElementById('bmi-marker').style.boxShadow = '0 0 0 2px ' + col;
 
-  document.getElementById('sum-change').textContent = (diff >= 0 ? '+' : '') + diff.toFixed(1) + ' kg';
-  document.getElementById('sum-change').style.color = diff > 0 ? '#e24b4a' : diff < 0 ? '#1D9E75' : 'inherit';
+  document.getElementById('sum-change').textContent = (diff>=0?'+':'') + diff.toFixed(1) + ' kg';
+  document.getElementById('sum-change').style.color = diff>0?'#e24b4a':diff<0?'#1D9E75':'inherit';
   document.getElementById('sum-falta').textContent = falta + ' kg';
   document.getElementById('sum-altura').textContent = altura + ' cm';
-  const primeiroReg = state.registos.length ? new Date(state.registos[0].data + 'T00:00:00').toLocaleDateString('pt-PT', {day:'2-digit',month:'short',year:'numeric'}) : '—';
-  document.getElementById('sum-primeiro').textContent = primeiroReg;
+  const p0 = state.registos.length ? new Date(state.registos[0].data+'T00:00:00').toLocaleDateString('pt-PT',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+  document.getElementById('sum-primeiro').textContent = p0;
 
   const nome_ = nome || 'U';
   document.getElementById('sb-avatar').textContent = nome_.charAt(0).toUpperCase();
@@ -849,182 +506,241 @@ function renderProgresso() {
   document.getElementById('sb-meta').textContent = atual.toFixed(1) + ' kg · IMC ' + bmi.toFixed(1);
   document.getElementById('prog-sub').textContent = nome ? `Olá, ${nome}! Aqui está o teu progresso.` : 'Acompanha a tua evolução';
 
-  renderChart();
+  renderChartPeso();
 }
 
-function renderChart() {
-  const hoje = new Date();
-  const inicio = new Date(hoje);
-  inicio.setDate(hoje.getDate() - 29);
-
-  const labels = [], dados = [];
-  for (let i = 0; i < 30; i++) {
-    const d = new Date(inicio);
-    d.setDate(inicio.getDate() + i);
-    const ds = d.toISOString().split('T')[0];
-    const r = state.registos.find(x => x.data === ds);
-    labels.push(d.toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' }));
-    dados.push(r ? r.peso : null);
+function renderChartPeso() {
+  const hoje = new Date(), inicio = new Date(hoje);
+  inicio.setDate(hoje.getDate()-29);
+  const labels=[], dados=[];
+  for (let i=0;i<30;i++) {
+    const d=new Date(inicio); d.setDate(inicio.getDate()+i);
+    const ds=d.toISOString().split('T')[0];
+    const r=state.registos.find(x=>x.data===ds);
+    labels.push(d.toLocaleDateString('pt-PT',{day:'2-digit',month:'short'}));
+    dados.push(r?r.peso:null);
   }
-
-  if (chartInst) { chartInst.destroy(); chartInst = null; }
-
+  if (chartPeso) { chartPeso.destroy(); chartPeso=null; }
   const obj = state.perfil?.objetivo;
+  const datasets=[{label:'Peso',data:dados,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.06)',borderWidth:2,pointRadius:dados.map(d=>d!==null?4:0),pointBackgroundColor:'#1D9E75',pointBorderColor:'#0f1117',pointBorderWidth:2,spanGaps:true,fill:true,tension:0.35}];
+  if (obj) datasets.push({label:'Objetivo',data:Array(30).fill(obj),borderColor:'rgba(29,158,117,0.3)',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false});
+  chartPeso = new Chart(document.getElementById('chart30'),{type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2130',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,titleColor:'#8b90a7',bodyColor:'#eef0f6',callbacks:{label:ctx=>ctx.parsed.y!==null?ctx.dataset.label+': '+ctx.parsed.y.toFixed(1)+' kg':null}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5f78',font:{size:11,family:'DM Mono'},maxTicksLimit:7}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5f78',font:{size:11,family:'DM Mono'},callback:v=>v.toFixed(1)}}}}});
+}
 
-  const datasets = [{
-    label: 'Peso',
-    data: dados,
-    borderColor: '#1D9E75',
-    backgroundColor: 'rgba(29,158,117,0.06)',
-    borderWidth: 2,
-    pointRadius: dados.map(d => d !== null ? 4 : 0),
-    pointBackgroundColor: '#1D9E75',
-    pointBorderColor: '#0f1117',
-    pointBorderWidth: 2,
-    spanGaps: true,
-    fill: true,
-    tension: 0.35
-  }];
+function getTodayAtiv() {
+  const today = new Date().toISOString().split('T')[0];
+  return state.atividade.find(a => a.data === today) || null;
+}
 
-  if (obj) {
-    datasets.push({
-      label: 'Objetivo',
-      data: Array(30).fill(obj),
-      borderColor: 'rgba(29,158,117,0.3)',
-      borderDash: [5, 4],
-      borderWidth: 1.5,
-      pointRadius: 0,
-      fill: false
-    });
+function renderAtividade() {
+  const obj = state.perfil;
+  const hasObj = obj && (obj.passosObj || obj.distObj || obj.calObj);
+  if (!hasObj) {
+    document.getElementById('no-ativ-profile').style.display = 'block';
+    document.getElementById('ativ-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('no-ativ-profile').style.display = 'none';
+  document.getElementById('ativ-content').style.display = 'block';
+
+  const today = new Date().toISOString().split('T')[0];
+  const reg = state.atividade.find(a => a.data === today);
+  const passos = reg?.passos ?? null;
+  const dist = reg?.distancia ?? null;
+  const cal = reg?.calorias ?? null;
+
+  const pObj = obj.passosObj || 10000;
+  const dObj = obj.distObj || 7;
+  const cObj = obj.calObj || 500;
+
+  document.getElementById('a-passos-hoje').textContent = passos !== null ? passos.toLocaleString('pt-PT') : '—';
+  document.getElementById('a-dist-hoje').innerHTML = dist !== null ? dist.toFixed(1) + '<span class="metric-unit"> km</span>' : '—';
+  document.getElementById('a-cal-hoje').innerHTML = cal !== null ? cal.toLocaleString('pt-PT') + '<span class="metric-unit"> kcal</span>' : '—';
+
+  function setPctBar(barId, pctId, descId, lblId, val, total, unit, color) {
+    const pct = val !== null ? Math.min(100, Math.round((val/total)*100)) : 0;
+    document.getElementById(pctId).textContent = pct + '%';
+    document.getElementById(barId).style.width = pct + '%';
+    document.getElementById(descId).textContent = val !== null ? `${(total-val)>0?(total-val).toLocaleString('pt-PT')+' '+unit+' em falta':'Objetivo atingido!'}` : `Objetivo: ${total.toLocaleString('pt-PT')} ${unit}`;
+    document.getElementById(lblId).textContent = total.toLocaleString('pt-PT') + ' ' + unit;
   }
 
-  chartInst = new Chart(document.getElementById('chart30'), {
-    type: 'line',
-    data: { labels, datasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { intersect: false, mode: 'index' },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1e2130',
-          borderColor: 'rgba(255,255,255,0.1)',
-          borderWidth: 1,
-          titleColor: '#8b90a7',
-          bodyColor: '#eef0f6',
-          callbacks: {
-            label: ctx => ctx.parsed.y !== null ? ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + ' kg' : null
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          ticks: { color: '#5a5f78', font: { size: 11, family: 'DM Mono' }, maxTicksLimit: 7 }
-        },
-        y: {
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          ticks: { color: '#5a5f78', font: { size: 11, family: 'DM Mono' }, callback: v => v.toFixed(1) }
-        }
-      }
+  setPctBar('a-passos-bar','a-passos-pct','a-passos-desc','a-passos-obj-label', passos, pObj, 'passos', 'amber');
+  setPctBar('a-dist-bar','a-dist-pct','a-dist-desc','a-dist-obj-label', dist, dObj, 'km', 'blue');
+  setPctBar('a-cal-bar','a-cal-pct','a-cal-desc','a-cal-obj-label', cal, cObj, 'kcal', 'purple');
+
+  if (passos !== null) {
+    const pp = Math.round((passos/pObj)*100);
+    document.getElementById('a-passos-pct-label').innerHTML = `<span style="color:var(--amber)">${pp}% do objetivo</span>`;
+  }
+  if (dist !== null) {
+    const dp = Math.round((dist/dObj)*100);
+    document.getElementById('a-dist-pct-label').innerHTML = `<span style="color:var(--blue)">${dp}% do objetivo</span>`;
+  }
+  if (cal !== null) {
+    const cp = Math.round((cal/cObj)*100);
+    document.getElementById('a-cal-pct-label').innerHTML = `<span style="color:var(--purple)">${cp}% do objetivo</span>`;
+  }
+
+  renderChartAtiv();
+}
+
+let chartAtivColors = { passos: { border:'#ef9f27', bg:'rgba(239,159,39,0.08)', obj:'rgba(239,159,39,0.3)' }, distancia: { border:'#378add', bg:'rgba(55,138,221,0.08)', obj:'rgba(55,138,221,0.3)' }, calorias: { border:'#8b5cf6', bg:'rgba(139,92,246,0.08)', obj:'rgba(139,92,246,0.3)' } };
+
+function setChartAtivType(type) {
+  chartAtivType = type;
+  ['passos','distancia','calorias'].forEach(t => {
+    const btn = document.getElementById('btn-'+t);
+    const colors = chartAtivColors[t];
+    if (t === type) {
+      btn.style.borderColor = colors.border; btn.style.background = colors.border+'22'; btn.style.color = colors.border;
+    } else {
+      btn.style.borderColor = 'rgba(255,255,255,0.12)'; btn.style.background = 'none'; btn.style.color = '#8b90a7';
     }
   });
+  renderChartAtiv();
+}
+
+function renderChartAtiv() {
+  const hoje = new Date(), inicio = new Date(hoje);
+  inicio.setDate(hoje.getDate()-29);
+  const labels=[], dados=[];
+  for (let i=0;i<30;i++) {
+    const d=new Date(inicio); d.setDate(inicio.getDate()+i);
+    const ds=d.toISOString().split('T')[0];
+    const r=state.atividade.find(x=>x.data===ds);
+    labels.push(d.toLocaleDateString('pt-PT',{day:'2-digit',month:'short'}));
+    const val = r ? (chartAtivType==='passos'?r.passos:chartAtivType==='distancia'?r.distancia:r.calorias) : null;
+    dados.push(val??null);
+  }
+  if (chartAtivInst) { chartAtivInst.destroy(); chartAtivInst=null; }
+
+  const c = chartAtivColors[chartAtivType];
+  const obj = state.perfil;
+  const objVal = chartAtivType==='passos'?obj?.passosObj:chartAtivType==='distancia'?obj?.distObj:obj?.calObj;
+  const unitLabel = chartAtivType==='passos'?'passos':chartAtivType==='distancia'?'km':'kcal';
+
+  const datasets=[{label:chartAtivType.charAt(0).toUpperCase()+chartAtivType.slice(1),data:dados,borderColor:c.border,backgroundColor:c.bg,borderWidth:2,pointRadius:dados.map(d=>d!==null?4:0),pointBackgroundColor:c.border,pointBorderColor:'#0f1117',pointBorderWidth:2,spanGaps:true,fill:true,tension:0.3}];
+  if (objVal) datasets.push({label:'Objetivo',data:Array(30).fill(objVal),borderColor:c.obj,borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false});
+
+  chartAtivInst = new Chart(document.getElementById('chartAtiv'),{type:'bar',data:{labels,datasets:[{...datasets[0],type:'bar',backgroundColor:c.border+'44',borderColor:c.border,borderWidth:1.5,borderRadius:4,pointRadius:0,fill:false},...(datasets[1]?[{...datasets[1],type:'line'}]:[])].filter(Boolean)},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2130',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,titleColor:'#8b90a7',bodyColor:'#eef0f6',callbacks:{label:ctx=>ctx.parsed.y!==null?ctx.dataset.label+': '+ctx.parsed.y.toLocaleString('pt-PT')+' '+unitLabel:null}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5f78',font:{size:11,family:'DM Mono'},maxTicksLimit:7}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5a5f78',font:{size:11,family:'DM Mono'}}}}}});
 }
 
 function renderHistorico() {
   const list = document.getElementById('log-list');
   document.getElementById('hist-sub').textContent = state.registos.length + ' pesagens registadas';
-  if (!state.registos.length) {
-    list.innerHTML = '<div class="empty"><i class="ti ti-clipboard-list"></i>Ainda não há registos.</div>';
-    return;
-  }
-  const sorted = [...state.registos].reverse();
-  list.innerHTML = sorted.map((r, i) => {
-    const prev = sorted[i + 1];
-    let badgeHtml = '';
-    if (prev) {
-      const d = r.peso - prev.peso;
-      if (Math.abs(d) < 0.05) badgeHtml = `<span class="badge badge-same">= sem alt.</span>`;
-      else if (d > 0) badgeHtml = `<span class="badge badge-up">▲ +${d.toFixed(1)}</span>`;
-      else badgeHtml = `<span class="badge badge-down">▼ ${d.toFixed(1)}</span>`;
-    }
-    const dStr = new Date(r.data + 'T00:00:00').toLocaleDateString('pt-PT', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+  if (!state.registos.length) { list.innerHTML='<div class="empty"><i class="ti ti-clipboard-list"></i>Ainda não há registos.</div>'; return; }
+  const sorted=[...state.registos].reverse();
+  list.innerHTML=sorted.map((r,i)=>{
+    const prev=sorted[i+1];
+    let bHtml='';
+    if (prev) { const d=r.peso-prev.peso; bHtml=Math.abs(d)<0.05?'<span class="badge badge-same">= sem alt.</span>':d>0?`<span class="badge badge-up">▲ +${d.toFixed(1)}</span>`:`<span class="badge badge-down">▼ ${d.toFixed(1)}</span>`; }
+    const dStr=new Date(r.data+'T00:00:00').toLocaleDateString('pt-PT',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+    return `<div class="log-item"><div><div class="log-date">${dStr}</div><div class="log-weight">${r.peso.toFixed(1)} kg</div></div><div style="display:flex;align-items:center;gap:10px;">${bHtml}<button class="delete-btn" onclick="deletarPeso('${r.data}')" title="Apagar"><i class="ti ti-trash"></i></button></div></div>`;
+  }).join('');
+}
+
+function renderHistoricoAtiv() {
+  const list = document.getElementById('ativ-log-list');
+  document.getElementById('hist-ativ-sub').textContent = state.atividade.length + ' registos de atividade';
+  if (!state.atividade.length) { list.innerHTML='<div class="empty"><i class="ti ti-run"></i>Ainda não há registos de atividade.</div>'; return; }
+  const sorted=[...state.atividade].sort((a,b)=>b.data.localeCompare(a.data));
+  list.innerHTML=sorted.map(r=>{
+    const dStr=new Date(r.data+'T00:00:00').toLocaleDateString('pt-PT',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
     return `<div class="log-item">
       <div>
         <div class="log-date">${dStr}</div>
-        <div class="log-weight">${r.peso.toFixed(1)} kg</div>
+        <div style="display:flex;gap:14px;margin-top:4px;flex-wrap:wrap;">
+          ${r.passos!=null?`<span style="font-size:13px;color:var(--amber);font-family:'DM Mono',monospace;font-weight:600;"><i class="ti ti-shoe" style="font-size:12px;"></i> ${r.passos.toLocaleString('pt-PT')} passos</span>`:''}
+          ${r.distancia!=null?`<span style="font-size:13px;color:var(--blue);font-family:'DM Mono',monospace;font-weight:600;"><i class="ti ti-map-pin" style="font-size:12px;"></i> ${r.distancia.toFixed(1)} km</span>`:''}
+          ${r.calorias!=null?`<span style="font-size:13px;color:var(--purple);font-family:'DM Mono',monospace;font-weight:600;"><i class="ti ti-flame" style="font-size:12px;"></i> ${r.calorias.toLocaleString('pt-PT')} kcal</span>`:''}
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        ${badgeHtml}
-        <button class="delete-btn" onclick="deletar('${r.data}')" title="Apagar"><i class="ti ti-trash"></i></button>
-      </div>
+      <button class="delete-btn" onclick="deletarAtiv('${r.data}')" title="Apagar"><i class="ti ti-trash"></i></button>
     </div>`;
   }).join('');
 }
 
-function deletar(data) {
-  state.registos = state.registos.filter(r => r.data !== data);
-  save();
-  renderHistorico();
-}
+function deletarPeso(data) { state.registos=state.registos.filter(r=>r.data!==data); save(); renderHistorico(); }
+function deletarAtiv(data) { state.atividade=state.atividade.filter(r=>r.data!==data); save(); renderHistoricoAtiv(); }
 
 function renderUltimo() {
-  const card = document.getElementById('ult-card');
-  if (!state.registos.length) { card.style.display = 'none'; return; }
-  card.style.display = 'block';
-  const last = state.registos[state.registos.length - 1];
-  const prev = state.registos.length > 1 ? state.registos[state.registos.length - 2] : null;
-  document.getElementById('ult-data').textContent = new Date(last.data + 'T00:00:00').toLocaleDateString('pt-PT', { weekday: 'long', day: '2-digit', month: 'long' });
-  document.getElementById('ult-peso').textContent = last.peso.toFixed(1) + ' kg';
+  const card=document.getElementById('ult-card');
+  if (!state.registos.length) { card.style.display='none'; return; }
+  card.style.display='block';
+  const last=state.registos[state.registos.length-1];
+  const prev=state.registos.length>1?state.registos[state.registos.length-2]:null;
+  document.getElementById('ult-data').textContent=new Date(last.data+'T00:00:00').toLocaleDateString('pt-PT',{weekday:'long',day:'2-digit',month:'long'});
+  document.getElementById('ult-peso').textContent=last.peso.toFixed(1)+' kg';
   if (prev) {
-    const d = last.peso - prev.peso;
-    const el = document.getElementById('ult-badge');
-    if (Math.abs(d) < 0.05) el.innerHTML = `<span class="badge badge-same">= sem alteração</span>`;
-    else if (d > 0) el.innerHTML = `<span class="badge badge-up">▲ +${d.toFixed(1)} kg</span>`;
-    else el.innerHTML = `<span class="badge badge-down">▼ ${d.toFixed(1)} kg</span>`;
+    const d=last.peso-prev.peso;
+    document.getElementById('ult-badge').innerHTML=Math.abs(d)<0.05?'<span class="badge badge-same">= sem alteração</span>':d>0?`<span class="badge badge-up">▲ +${d.toFixed(1)} kg</span>`:`<span class="badge badge-down">▼ ${d.toFixed(1)} kg</span>`;
   }
 }
 
 function guardarPerfil() {
-  const altura = parseFloat(document.getElementById('p-altura').value);
-  const pesoinicial = parseFloat(document.getElementById('p-inicial').value);
-  const objetivo = parseFloat(document.getElementById('p-objetivo').value);
-  const nome = document.getElementById('p-nome').value.trim();
-  if (!altura || !pesoinicial || !objetivo) {
-    showStatus('p-status', 'Preenche altura, peso inicial e objetivo.', false);
-    return;
-  }
-  state.perfil = { altura, pesoinicial, objetivo, nome };
+  const altura=parseFloat(document.getElementById('p-altura').value);
+  const pesoinicial=parseFloat(document.getElementById('p-inicial').value);
+  const objetivo=parseFloat(document.getElementById('p-objetivo').value);
+  const nome=document.getElementById('p-nome').value.trim();
+  if (!altura||!pesoinicial||!objetivo) { showStatus('p-status','Preenche altura, peso inicial e objetivo.',false); return; }
+  state.perfil = { ...state.perfil, altura, pesoinicial, objetivo, nome };
   save();
-  showStatus('p-status', 'Perfil guardado!', true);
-  document.getElementById('sb-avatar').textContent = (nome || 'U').charAt(0).toUpperCase();
-  document.getElementById('sb-name').textContent = nome || 'Utilizador';
+  showStatus('p-status','Perfil guardado!',true);
+  document.getElementById('sb-avatar').textContent=(nome||'U').charAt(0).toUpperCase();
+  document.getElementById('sb-name').textContent=nome||'Utilizador';
+}
+
+function guardarObjetivosAtiv() {
+  const passosObj=parseInt(document.getElementById('p-passos-obj').value)||0;
+  const distObj=parseFloat(document.getElementById('p-dist-obj').value)||0;
+  const calObj=parseInt(document.getElementById('p-cal-obj').value)||0;
+  if (!passosObj&&!distObj&&!calObj) { showStatus('p-ativ-status','Define pelo menos um objetivo.',false); return; }
+  state.perfil = { ...state.perfil, passosObj, distObj, calObj };
+  save();
+  showStatus('p-ativ-status','Objetivos guardados!',true);
 }
 
 function preencherPerfil() {
   if (!state.perfil) return;
-  document.getElementById('p-altura').value = state.perfil.altura || '';
-  document.getElementById('p-inicial').value = state.perfil.pesoinicial || '';
-  document.getElementById('p-objetivo').value = state.perfil.objetivo || '';
-  document.getElementById('p-nome').value = state.perfil.nome || '';
+  document.getElementById('p-altura').value=state.perfil.altura||'';
+  document.getElementById('p-inicial').value=state.perfil.pesoinicial||'';
+  document.getElementById('p-objetivo').value=state.perfil.objetivo||'';
+  document.getElementById('p-nome').value=state.perfil.nome||'';
+  document.getElementById('p-passos-obj').value=state.perfil.passosObj||'';
+  document.getElementById('p-dist-obj').value=state.perfil.distObj||'';
+  document.getElementById('p-cal-obj').value=state.perfil.calObj||'';
 }
 
-function registar() {
-  const data = document.getElementById('r-data').value;
-  const peso = parseFloat(document.getElementById('r-peso').value);
-  if (!data || !peso) { showStatus('r-status', 'Preenche a data e o peso.', false); return; }
-  const idx = state.registos.findIndex(r => r.data === data);
-  if (idx >= 0) state.registos[idx].peso = peso;
-  else state.registos.push({ data, peso });
-  state.registos.sort((a, b) => a.data.localeCompare(b.data));
-  save();
-  showStatus('r-status', 'Registo guardado!', true);
-  renderUltimo();
+function registarPeso() {
+  const data=document.getElementById('r-data').value;
+  const peso=parseFloat(document.getElementById('r-peso').value);
+  if (!data||!peso) { showStatus('r-status','Preenche a data e o peso.',false); return; }
+  const idx=state.registos.findIndex(r=>r.data===data);
+  if (idx>=0) state.registos[idx].peso=peso;
+  else state.registos.push({data,peso});
+  state.registos.sort((a,b)=>a.data.localeCompare(b.data));
+  save(); showStatus('r-status','Registo guardado!',true); renderUltimo();
+}
+
+function registarAtividade() {
+  const data=document.getElementById('a-data').value;
+  const passos=document.getElementById('a-passos').value?parseInt(document.getElementById('a-passos').value):null;
+  const distancia=document.getElementById('a-dist').value?parseFloat(document.getElementById('a-dist').value):null;
+  const calorias=document.getElementById('a-cal').value?parseInt(document.getElementById('a-cal').value):null;
+  if (!data||(passos===null&&distancia===null&&calorias===null)) { showStatus('a-status','Preenche a data e pelo menos um valor.',false); return; }
+  const idx=state.atividade.findIndex(a=>a.data===data);
+  const reg={data, passos, distancia, calorias};
+  if (idx>=0) state.atividade[idx]=reg;
+  else state.atividade.push(reg);
+  state.atividade.sort((a,b)=>a.data.localeCompare(b.data));
+  save(); showStatus('a-status','Atividade guardada!',true); renderAtividade();
 }
 
 load();
-document.getElementById('r-data').value = new Date().toISOString().split('T')[0];
+const hoje = new Date().toISOString().split('T')[0];
+document.getElementById('r-data').value = hoje;
+document.getElementById('a-data').value = hoje;
 renderProgresso();
 renderUltimo();
 if (state.perfil) preencherPerfil();
